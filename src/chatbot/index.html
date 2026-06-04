@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Pedro | Ninja ChatBot 🍥</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Russo+One&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --naruto-orange: #FF6B35;
+            --naruto-orange-light: #FF8C5A;
+            --naruto-orange-dark: #E85A2A;
+            --naruto-red: #C41E3A;
+            --naruto-red-dark: #8B0000;
+            --naruto-bg: #0a0a0f;
+            --naruto-surface: #1a1a2e;
+            --naruto-surface-light: #2a2a4e;
+            --naruto-text: #f0e6d3;
+            --naruto-text-dim: #9a9a9a;
+            --naruto-border: #3a3a5e;
+            --naruto-gold: #ffd700;
+            --naruto-blue: #4169E1;
+            --chakra-blue: #00bfff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--naruto-bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Backgorund - nuvens da Akatsukii */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(196, 30, 58, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 191, 255, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Kunai flutuante decoração */
+        .kunai-bg {
+            position: fixed;
+            font-size: 30px;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .kunai-bg:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .kunai-bg:nth-child(2) { top: 20%; right: 10%; animation-delay: 1s; }
+        .kunai-bg:nth-child(3) { bottom: 30%; left: 8%; animation-delay: 2s; }
+        .kunai-bg:nth-child(4) { bottom: 15%; right: 5%; animation-delay: 3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(45deg); }
+            50% { transform: translateY(-20px) rotate(45deg); }
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 850px;
+            background: linear-gradient(145deg, var(--naruto-surface), var(--naruto-bg));
+            border-radius: 16px;
+            box-shadow: 
+                0 0 40px rgba(255, 107, 53, 0.2),
+                0 0 80px rgba(196, 30, 58, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            border: 2px solid var(--naruto-orange);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Spiral decoração */
+        .chat-container::before {
+            content: '🍥';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 60px;
+            opacity: 0.15;
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--naruto-red-dark), var(--naruto-red));
+            color: var(--naruto-text);
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--naruto-orange);
+            position: relative;
+        }
+
+        /* sobreposição de folha Konoha */
+        .chat-header::after {
+            content: '🍃';
+            position: absolute;
+            right: 100px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            opacity: 0.3;
+            animation: spin 8s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: translateY(-50%) rotate(0deg); }
+            to { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .ninja-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--naruto-orange), var(--naruto-orange-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 
+                0 0 20px rgba(255, 107, 53, 0.5),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            border: 2px solid var(--naruto-gold);
+            animation: chakra-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes chakra-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.3); }
+            50% { box-shadow: 0 0 35px rgba(255, 107, 53, 0.8), 0 0 60px rgba(0, 191, 255, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3); }
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-title h1 {
+            font-family: 'Russo One', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--naruto-text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+
+        .header-title h1 span.code {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, var(--naruto-orange), var(--naruto-gold));
+            color: var(--naruto-bg);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-subtitle {
+            font-size: 0.8rem;
+            color: var(--naruto-gold);
+            font-family: 'JetBrains Mono', monospace;
+            opacity: 0.9;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--chakra-blue);
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--chakra-blue);
+            border-radius: 50%;
+            animation: chakra-pulse 1.5s infinite;
+            box-shadow: 0 0 10px var(--chakra-blue);
+        }
+
+        @keyframes chakra-pulse {
+            0%, 100% { 
+                opacity: 1; 
+                box-shadow: 0 0 10px var(--chakra-blue);
+            }
+            50% { 
+                opacity: 0.6; 
+                box-shadow: 0 0 20px var(--chakra-blue), 0 0 30px var(--naruto-orange);
+            }
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, var(--naruto-surface-light), var(--naruto-surface));
+            border: 2px solid var(--naruto-orange);
+            color: var(--naruto-orange);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            font-family: 'Russo One', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .reset-btn:hover {
+            background: linear-gradient(135deg, var(--naruto-orange), var(--naruto-orange-dark));
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+            transform: scale(1.05);
+        }
+
+        .chat-messages {
+            height: 480px;
+            overflow-y: auto;
+            padding: 24px;
+            background: 
+                linear-gradient(180deg, var(--naruto-bg) 0%, rgba(26, 26, 46, 0.9) 100%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff6b35' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            font-size: 0.95rem;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: var(--naruto-bg);
+            border-radius: 5px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--naruto-orange), var(--naruto-red));
+            border-radius: 5px;
+            border: 2px solid var(--naruto-bg);
+        }
+
+        .message {
+            margin-bottom: 24px;
+            animation: message-appear 0.4s ease-out;
+        }
+
+        @keyframes message-appear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .message.user .message-header {
+            color: var(--chakra-blue);
+        }
+
+        .message.bot .message-header {
+            color: var(--naruto-orange);
+        }
+
+        .message-icon {
+            font-size: 1.1rem;
+        }
+
+        .message-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'Russo One', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--naruto-text-dim);
+            margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .message-content {
+            padding: 16px 20px;
+            border-radius: 12px;
+            line-height: 1.7;
+            word-wrap: break-word;
+            color: var(--naruto-text);
+            position: relative;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.15), rgba(65, 105, 225, 0.1));
+            border-left: 4px solid var(--chakra-blue);
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.1);
+        }
+
+        .message.bot .message-content {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(196, 30, 58, 0.1));
+            border-left: 4px solid var(--naruto-orange);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.1);
+        }
+
+        .message-content code {
+            background: var(--naruto-bg);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--naruto-gold);
+            border: 1px solid var(--naruto-border);
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 20px 24px;
+            background: linear-gradient(180deg, var(--naruto-surface), var(--naruto-surface-light));
+            border-top: 3px solid var(--naruto-orange);
+            gap: 14px;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-prefix {
+            position: absolute;
+            left: 16px;
+            color: var(--naruto-orange);
+            font-family: 'Russo One', monospace;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .chat-input input {
+            width: 100%;
+            padding: 16px 16px 16px 42px;
+            background: var(--naruto-bg);
+            border: 2px solid var(--naruto-border);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: 'Noto Sans JP', sans-serif;
+            color: var(--naruto-text);
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .chat-input input::placeholder {
+            color: var(--naruto-text-dim);
+        }
+
+        .chat-input input:focus {
+            border-color: var(--naruto-orange);
+            box-shadow: 
+                0 0 0 4px rgba(255, 107, 53, 0.2),
+                0 0 30px rgba(255, 107, 53, 0.1);
+        }
+
+        .chat-input button {
+            background: linear-gradient(135deg, var(--naruto-orange), var(--naruto-red));
+            border: none;
+            color: white;
+            padding: 16px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: 'Russo One', sans-serif;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .chat-input button:hover {
+            background: linear-gradient(135deg, var(--naruto-orange-light), var(--naruto-orange));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .chat-input button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(196, 30, 58, 0.1));
+            border-radius: 12px;
+            border-left: 4px solid var(--naruto-orange);
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, var(--naruto-orange), var(--naruto-gold));
+            border-radius: 50%;
+            animation: ninja-bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes ninja-bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.2); }
+        }
+
+        .footer {
+            padding: 14px 24px;
+            background: linear-gradient(135deg, var(--naruto-red-dark), var(--naruto-red));
+            border-top: 3px solid var(--naruto-orange);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--naruto-text);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .shortcut {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .shortcut kbd {
+            background: rgba(0,0,0,0.3);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--naruto-orange);
+            font-size: 0.7rem;
+            color: var(--naruto-gold);
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-right::before {
+            content: '🍥';
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- decorações \o/ -->
+    <div class="kunai-bg">🔪</div>
+    <div class="kunai-bg">⭐</div>
+    <div class="kunai-bg">🌀</div>
+    <div class="kunai-bg">🔥</div>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="header-left">
+                <div class="ninja-logo">🍥</div>
+                <div class="header-title">
+                    <h1>PedroAI <span class="code">NINJA</span></h1>
+                    <span class="header-subtitle">火の国 ~ Konoha Tech</span>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span>chakra ativo</span>
+            </div>
+            <button class="reset-btn" onclick="resetChat()">⚡ Reset</button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-header">
+                    <span class="message-icon">🍥</span>
+                    <span class="message-label">Pedro-sensei</span>
+                    <span class="message-time" id="initTime"></span>
+                </div>
+                <div class="message-content">
+                    Yo! 👋 Sou o <strong>PedroAI</strong>, seu assistente ninja! Dattebayo! 🔥 Como posso ajudar você hoje? Pergunte qualquer coisa e vou usar todo meu chakra para responder!
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <div class="input-wrapper">
+                <span class="input-prefix">忍</span>
+                <input 
+                    type="text" 
+                    id="messageInput" 
+                    placeholder="Digite sua mensagem, dattebayo..." 
+                    onkeypress="handleKeyPress(event)"
+                >
+            </div>
+            <button id="sendBtn" onclick="sendMessage()">
+                <span>🔥</span> Jutsu!
+            </button>
+        </div>
+
+        <div class="footer">
+            <div class="footer-left">
+                <span class="shortcut"><kbd>Enter</kbd> enviar</span>
+                <span class="shortcut"><kbd>Ctrl</kbd>+<kbd>L</kbd> limpar</span>
+            </div>
+            <div class="footer-right">
+                <span>powered by gemini-2.5-flash</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:5000";
+        const chatMessages = document.getElementById("chatMessages");
+        const messageInput = document.getElementById("messageInput");
+        const sendBtn = document.getElementById("sendBtn");
+
+        // definir horario local
+        document.getElementById("initTime").textContent = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function getTime() {
+            return new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+        }
+
+        function addMessage(content, isUser) {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message ${isUser ? "user" : "bot"}`;
+            
+            const headerDiv = document.createElement("div");
+            headerDiv.className = "message-header";
+            headerDiv.innerHTML = `
+                <span class="message-icon">${isUser ? "⚡" : "🍥"}</span>
+                <span class="message-label">${isUser ? "Ninja" : "Pedro-sensei"}</span>
+                <span class="message-time">${getTime()}</span>
+            `;
+            
+            const contentDiv = document.createElement("div");
+            contentDiv.className = "message-content";
+            contentDiv.innerHTML = formatMessage(content);
+            
+            messageDiv.appendChild(headerDiv);
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function formatMessage(text) {
+            // Converte markdown básico para HTML
+            return text
+                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                .replace(/\*(.*?)\*/g, "<em>$1</em>")
+                .replace(/`(.*?)`/g, "<code>$1</code>")
+                .replace(/\n/g, "<br>");
+        }
+
+        function showTyping() {
+            const typingDiv = document.createElement("div");
+            typingDiv.id = "typingIndicator";
+            typingDiv.className = "message bot";
+            typingDiv.innerHTML = `
+                <div class="message-header">
+                    <span class="message-icon">🍥</span>
+                    <span class="message-label">Pedro-sensei</span>
+                    <span class="message-time">${getTime()}</span>
+                </div>
+                <div class="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTyping() {
+            const typing = document.getElementById("typingIndicator");
+            if (typing) typing.remove();
+        }
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            messageInput.value = "";
+            sendBtn.disabled = true;
+            showTyping();
+
+            try {
+                const response = await fetch(`${API_URL}/chat`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                hideTyping();
+
+                if (data.error) {
+                    addMessage("Erro: " + data.error, false);
+                } else {
+                    addMessage(data.response, false);
+                }
+            } catch (error) {
+                hideTyping();
+                addMessage("Erro de conexão. Verifique se o servidor está rodando.", false);
+            }
+
+            sendBtn.disabled = false;
+            messageInput.focus();
+        }
+
+        async function resetChat() {
+            try {
+                await fetch(`${API_URL}/reset`, { method: "POST" });
+                chatMessages.innerHTML = `
+                    <div class="message bot">
+                        <div class="message-header">
+                            <span class="message-icon">◆</span>
+                            <span class="message-label">pedro</span>
+                            <span class="message-time">${getTime()}</span>
+                        </div>
+                        <div class="message-content">
+                            Edo-Tensei! Voltei ;) Como posso ajudar você?
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                alert("Erro ao reiniciar o chat");
+            }
+        }
+
+        // atalho para clear do chat
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'l') {
+                e.preventDefault();
+                resetChat();
+            }
+        });
+
+        messageInput.focus();
+    </script>
+</body>
+</html>
