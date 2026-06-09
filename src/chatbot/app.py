@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from dotenv import load_dotenv
 from google import genai
@@ -8,6 +8,12 @@ load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+
+@app.route("/")
+def index():
+    """Serve the main chat interface."""
+    return render_template("index.html")
 
 # Inicializa o cliente e o chat
 client = genai.Client()
