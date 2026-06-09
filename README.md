@@ -13,13 +13,9 @@ chatBotPython/
 ├── requirements.txt        # Dependências Python
 └── src/
     └── chatbot/
-        ├── __init__.py     # Inicializador do pacote
         ├── app.py          # Aplicação Flask principal
         ├── templates/      # Templates HTML (convenção Flask)
         │   └── index.html  # Interface do chatbot
-        └── static/         # Arquivos estáticos
-            ├── css/        # Estilos CSS
-            └── js/         # Scripts JavaScript
 ```
 
 ## 🚀 Instalação
@@ -63,3 +59,5 @@ Acesse `http://localhost:5000` no navegador.
 - **Backend:** Python, Flask, Flask-CORS
 - **AI:** Google Gemini 2.5 Flash
 - **Frontend:** HTML, CSS, JavaScript vanilla
+
+(Por ser um modelo gratuito de AI ela não fornece respostas tão eficiente)
